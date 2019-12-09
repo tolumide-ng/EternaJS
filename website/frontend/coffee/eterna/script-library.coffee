@@ -143,24 +143,27 @@ class @Library
     data = Script.get_script_sync(id).data
     script = data['script'][0]
     code = ""
-
     if secure? and secure is true
-      user_id = data['current_uid']
-      status = "Access Denied:"
-      if !(user_id?)
-        status += " Must be logged in to execute scripts!"
-        alert(status)
-        return code
-      if user_id != script['uid']
-        status += " We can only execute scripts you have authored..."
-        status += " try making a copy!"
-        alert(status)
-        return code
+      if script['agreed_to_run'] == "0" && script['is_trusted'] == "0"
+        answer = null
+        if script['is_favorite'] == "1"
+          answer = prompt('The script has been updated since you last ran it!\n' +
+                'Go to this link to review it, and click OK to unlock it again.',
+                'https://eternagame.org/web/script/' + id)
+          if answer != null
+            Script.reaffirm_favorite(id, () => {})
+        else
+          answer = prompt('The scripts you run can do anything you do on the site, including publishing lab solutions and changing your password.\n' +
+                          'Only run this script if you or someone you trust have reviewed it, or if you trust the author of the script.\n' +
+                          'Go to the attached link to review it. Then click OK to run the script, and Cancel if you aren\'t sure.',
+                          'https://eternagame.org/web/script/' + id)
+        if answer == null
+          return ""   
 
     # for multiple input implementation
     if script['input']
       inputs = JSON.parse(script['input'])
-      for i in [0..(inputs.length - 1)]
+      for input in inputs #TEST
         input = inputs[i]
         code += "var "+input['value']+"=arguments["+i+"];"
     code = "function _"+id+"(){Lib = new Library();"+code+script['source']+"};_"+id
