@@ -153,8 +153,9 @@ class @Library
           if answer != null
             Script.reaffirm_favorite(id, () => {})
         else
-          answer = prompt('The scripts you run can do anything you do on the site, including publishing lab solutions and changing your password.\n' +
-                          'Only run this script if you or someone you trust have reviewed it, or if you trust the author of the script.\n' +
+          answer = prompt('This script was not written by a certified author.\n' +
+                          'Scripts can do everything that you can do on eterna: Post/Delete comments, puzzles, and lab solutions, and change your password, locking you out out and turning your account over to someone else (but not viewing your current password).\n'+
+                          'Only run this script if you trust the author, or if you or someone you trust have made sure the script isn\'t mallicious.\n'+
                           'Go to the attached link to review it. Then click OK to run the script, and Cancel if you aren\'t sure.',
                           'https://eternagame.org/web/script/' + id)
         if answer == null
